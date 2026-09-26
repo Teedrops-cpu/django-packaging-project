@@ -1,0 +1,15 @@
+[project]
+name = "configsite"
+version = "0.1.0"
+description = "A Django application packaged for reproducible deployment"
+requires-python = ">=3.10"
+dependencies = [
+    "Django>=6.1,<7.0",
+    "asgiref>=3.12,<4.0",
+    "sqlparse>=0.6,<1.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+

@@ -1,0 +1,12 @@
+# Virtual environment - never commit this, it's regenerated from pyproject.toml
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Windows metadata
+*:Zone.Identifier
+
+# Django local database (if using SQLite for local dev)
+db.sqlite3
