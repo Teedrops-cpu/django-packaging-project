@@ -1,6 +1,6 @@
 [project]
 name = "configsite"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Django application packaged for reproducible deployment"
 requires-python = ">=3.10"
 dependencies = [
