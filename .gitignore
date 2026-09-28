@@ -10,3 +10,4 @@ __pycache__/
 
 # Django local database (if using SQLite for local dev)
 db.sqlite3
+*.egg-info/
