@@ -1,3 +1,7 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 
-# Create your tests here.
+
+class PackagingSanityTests(SimpleTestCase):
+    def test_core_app_is_installed(self):
+        from django.apps import apps
+        self.assertTrue(apps.is_installed("core"))
