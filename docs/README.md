@@ -171,6 +171,44 @@ long, so a large value set before HTTPS works could lock users out.
 - `python manage.py check` passes under the dev settings.
 - `pip-audit -r requirements.lock.txt` reports **No known vulnerabilities found**
   for the pinned versions.
+- `core/tests.py` contains a real Django test (`PackagingSanityTests`) that
+  verifies the `core` app is actually registered and importable, run with
+  `manage.py test`. This turned up a real bug during development: the test file
+  originally kept Django's scaffolded `from django.test import TestCase` import
+  while the class body used `SimpleTestCase`, so the test failed with
+  `NameError: name 'SimpleTestCase' is not defined` until the import was corrected
+  to match the class actually being used.
+
+## Integrity verification (checksums)
+Distributing an artifact is only useful if the person installing it can confirm
+they received exactly what was built, not a corrupted or tampered copy. SHA-256
+checksums are generated for both build artifacts:
+
+```bash
+sha256sum dist/*.whl dist/*.tar.gz > dist/CHECKSUMS.sha256
+```
+
+and verified against the files on disk:
+
+```bash
+sha256sum -c dist/CHECKSUMS.sha256
+```
+
+which reports `OK` for both files. In practice, whoever downloads
+`configsite-0.3.0-py3-none-any.whl` would run the same `sha256sum -c` command
+against `CHECKSUMS.sha256` to confirm their copy matches byte-for-byte before
+installing it. `pip` supports the same idea natively through
+`--require-hashes`, which refuses to install a package whose hash doesn't match
+one declared in a requirements file.
+
+## Scope note: single-ecosystem packaging
+This project packages a Python/Django application only. The source assignment
+offered a choice of ecosystem (Node.js, Python/Django, or Java/Spring Boot); this
+submission goes deep on one rather than shallow across three, since each ecosystem
+has its own manifest format, build tooling, and versioning conventions that don't
+transfer directly (npm's `package.json`/lockfile model and Maven/Gradle's dependency
+management work differently enough from `pyproject.toml` and `pip-tools` that doing
+them justice would be three separate projects, not one).
 
 ## Troubleshooting Log
 | Problem | Cause | Fix |
@@ -187,6 +225,7 @@ long, so a large value set before HTTPS works could lock users out.
 - [x] Metadata configured and Semantic Versioning applied (0.1.0 to 0.2.0 to 0.3.0)
 - [x] Environment-specific configuration separated (dev and prod settings)
 - [x] Distributable artifacts built (`.whl` and `.tar.gz`) and installed in a clean environment
-- [x] Package verified with `manage.py check` and the production `check --deploy` audit
+- [x] Package verified with `manage.py check`, the production `check --deploy` audit, and a real Django test (`manage.py test`)
 - [x] Dependency security audit run (`pip-audit`: no known vulnerabilities)
+- [x] Artifact integrity verified with SHA-256 checksums (`dist/CHECKSUMS.sha256`)
 - [x] Repository organized (`docs/`, `screenshots/`, `scripts/`) with incremental commits
